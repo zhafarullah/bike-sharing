@@ -1,6 +1,42 @@
-# Submission Project Analisis Data dengan Python
+# 📌 Submission Project Analisis Data dengan Python
+
 ## Deskripsi
-Proyek ini bertujuan untuk menganalisis data pada Bike Sharing Dataset. Tujuan akhirnya adalah untuk menghasilkan wawasan dan informasi yang berguna dari data yang dianalisis.
-## Cara Menjalankan
-1. Clone repository ini ke komputer lokal Anda menggunakan perintah berikut:  
-`git clone https://github.com/zhafarullah/bike-sharing.git`
+Proyek ini digunakan untuk menganalisis data penyewaan sepeda (**Bike Sharing Dataset**). Tujuan dari proyek ini adalah memberikan wawasan tentang pola penyewaan sepeda berdasarkan cuaca, hari kerja, dan musim.
+
+---
+
+## 📄 Dataset
+Dataset yang digunakan adalah **Bike Sharing Dataset** yang terdiri dari informasi tentang jumlah penyewaan sepeda, cuaca, musim, dan hari kerja.
+
+---
+
+## 🔑 Fitur Dashboard
+- Total Penyewaan Sepeda
+- Perbandingan Penyewaan Registered dan Casual
+- Analisis Cuaca dan Penyewaan
+- Pola Penyewaan pada Hari Kerja vs Non-Kerja
+- Distribusi Penyewaan Sepeda Berdasarkan Musim
+- Tabel RFM (Recency, Frequency, Monetary)
+
+---
+
+## 🎯 Cara Menjalankan
+
+1. Clone Repository ke komputer lokal Anda
+ ```
+git clone https://github.com/zhafarullah/bike-sharing.git
+```
+2. Masuk ke folder hasil clone
+```
+cd bike-sharing/dashboard
+```
+3. Install semua dependency
+```
+pip install -r requirements.txt
+```
+4. Jalankan Streamlit
+```
+streamlit run dashboard.py
+```
+5. Atau bisa langsung lihat dashboard di link berikut
+ 👉 https://bike-sharing-zhafarullah.streamlit.app/
