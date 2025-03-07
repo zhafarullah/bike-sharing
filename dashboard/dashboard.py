@@ -6,8 +6,8 @@ from babel.numbers import format_currency
 sns.set(style='dark')
 
 # Load dataset
-day_df = pd.read_csv("dashboard/day_df_final.csv")
-hour_df = pd.read_csv("dashboard/hour_df_final.csv")
+day_df = pd.read_csv("day_df_final.csv")
+hour_df=pd.read_csv("hour_df_final.csv")
 
 day_df['date'] = pd.to_datetime(day_df['date'])
 
@@ -33,7 +33,7 @@ if start_date and end_date:
     st.metric(label="Total Rentals", value=total_rentals)
 
     # Bar Chart untuk Menganalisis Cuaca dan Penyewaan
-    st.write("### Analisis Cuaca dan Penyewaan")
+    st.write("### Analasis Cuaca terhadap rata-rata Penyewaan")
     pivot_weather = filtered_df.groupby("weathersit").agg({
         "total_rentals": ["mean", "sum", "count"]
     }).reset_index()
@@ -45,13 +45,14 @@ if start_date and end_date:
     ax.set_ylabel("Average Rentals")
     ax.set_title("Average Bike Rentals by Weather Situation")
     st.pyplot(fig)
+
+    # Pola Penyewaan Registered_Rentals pada Hari Kerja vs Non-Kerja
     st.write("### Pola Penyewaan Registered_Rentals pada Hari Kerja vs Non-Kerja")
     result = filtered_df.groupby("workingday").agg({
         "registered_rentals": "mean"
     }).reset_index()
     result['workingday'] = result['workingday'].replace({0: 'Non-Working Day', 1: 'Working Day'})
 
-    # Pola Penyewaan Registered_Rentals pada Hari Kerja vs Non-Kerja
     fig, ax = plt.subplots()
     sns.barplot(x="workingday", y="registered_rentals", data=result, palette="Blues", ax=ax)
     ax.set_xlabel("Hari")
@@ -70,44 +71,17 @@ if start_date and end_date:
     ax.set_title("Distribusi Penyewaan Sepeda Berdasarkan Musim")
     st.pyplot(fig)
 
-    # Tabel RFM
-    st.write("### Tabel RFM")
-    rfm_df = filtered_df.copy()
-    weekday_mapping = {
-        0: 'Sunday',
-        1: 'Monday',
-        2: 'Tuesday',
-        3: 'Wednesday',
-        4: 'Thursday',
-        5: 'Friday',
-        6: 'Saturday'
-    }
-    rfm_df['weekday'] = rfm_df['weekday'].map(weekday_mapping)
+    # Equal Width Binning
+    st.write("### Distribusi Penyewaan Sepeda dengan Equal Width Binning")
+    bins = pd.cut(filtered_df['total_rentals'], bins=3, labels=["Rendah", "Sedang", "Tinggi"])
+    filtered_df['rental_bins'] = bins
 
-    latest_date = rfm_df['date'].max()
-    rfm_df['Recency'] = (latest_date - rfm_df['date']).dt.days
-
-    frequency = rfm_df.groupby("weekday").agg({"date": "nunique"}).reset_index()
-    frequency.columns = ["weekday", "Frequency"]
-
-    monetary = rfm_df.groupby("weekday").agg({"total_rentals": "sum"}).reset_index()
-    monetary.columns = ["weekday", "Monetary"]
-
-    rfm_table = frequency.merge(monetary, on="weekday")
-    rfm_table = rfm_table.merge(rfm_df[['weekday', 'Recency']].drop_duplicates(), on='weekday')
-    rfm_table = rfm_table.sort_values(by=["Monetary"], ascending=False)
-
-    st.dataframe(rfm_table)
-
-    # Bar Chart RFM
-    st.write("### Monetary Value by Weekday")
-    fig, ax = plt.subplots(figsize=(12, 6))
-    sns.barplot(data=rfm_table, x='weekday', y='Monetary', palette='viridis', order=[
-        'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'
-    ], ax=ax)
-    ax.set_title("Monetary Value by Weekday")
-    ax.set_xlabel("Weekday")
-    ax.set_ylabel("Total Rentals")
+    bin_counts = filtered_df['rental_bins'].value_counts().sort_index()
+    fig, ax = plt.subplots()
+    sns.barplot(x=bin_counts.index, y=bin_counts.values, palette=["#92c5de", "#f4a582", "#b8e186"], ax=ax)
+    ax.set_xlabel("Kategori Rental")
+    ax.set_ylabel("Jumlah Data")
+    ax.set_title("Distribusi Binning Total Rentals (Equal Width)")
     st.pyplot(fig)
 
 else:
