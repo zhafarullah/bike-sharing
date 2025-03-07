@@ -6,8 +6,8 @@ from babel.numbers import format_currency
 sns.set(style='dark')
 
 # Load dataset
-day_df = pd.read_csv("day_df_final.csv")
-hour_df=pd.read_csv("hour_df_final.csv")
+day_df = pd.read_csv("dashboard/day_df_final.csv")
+hour_df = pd.read_csv("dashboard/hour_df_final.csv")
 
 day_df['date'] = pd.to_datetime(day_df['date'])
 
